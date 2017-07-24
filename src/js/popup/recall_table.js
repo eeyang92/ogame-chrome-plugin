@@ -15,26 +15,14 @@ import { observer } from 'mobx-react'
 import RecallTableRow from './recall_table_row'
 import { RecallTableStore } from './main'
 
-type State = {
-	url: string
-}
+type State = {}
 type Props = {
 	datastore: RecallTableStore
 }
 
 @observer
 export default class RecallTable extends Component {
-	constructor(props: Props) {
-		super(props)
-
-		this.uniqueId = 0
-
-		const id = this.uniqueId++
-
-		this.state = {
-			rows: []
-		}
-	}
+	props: Props
 
 	renderRows() {
 		const rows = []
@@ -45,13 +33,11 @@ export default class RecallTable extends Component {
 					<RecallTableRow
 						datastore={ this.props.datastore }
 						index={ index }
-						key={ index }
+						key={ row.id }
 					/>
 				)
 			})
 		}
-					// key={ `recall-table-row-${ row.id }` }
-					// id={ `recall-table-row-${ row.id }` }
 
 		return rows
 	}
@@ -66,7 +52,8 @@ export default class RecallTable extends Component {
 				>
 					<TableRow>
 						<TableHeaderColumn>URL</TableHeaderColumn>
-						<TableHeaderColumn>Time</TableHeaderColumn>
+						<TableHeaderColumn>Time (H:M:S)</TableHeaderColumn>
+						<TableHeaderColumn>Time Option</TableHeaderColumn>
 						<TableHeaderColumn>Set</TableHeaderColumn>
 						<TableHeaderColumn>Remove</TableHeaderColumn>
 					</TableRow>

@@ -3,6 +3,9 @@ import RaisedButton from 'material-ui/RaisedButton'
 import IconButton from 'material-ui/IconButton'
 import Cancel from 'material-ui/svg-icons/navigation/cancel'
 import TextField from 'material-ui/TextField'
+import DropDownMenu from 'material-ui/DropDownMenu'
+import MenuItem from 'material-ui/MenuItem'
+import muiThemeable from 'material-ui/styles/muiThemeable'
 import {
 	Table,
 	TableBody,
@@ -21,10 +24,23 @@ type State = {
 
 type Props = {
 	id: string,
-	datastore: RecallTableStore
+	datastore: RecallTableStore,
+	index: number
 }
 
-export default class RecallTableRow extends Component {
+function zeroToMax(max) {
+	const list = []
+
+	for (let i = 0; i < max; i++) {
+		list.push(
+			<MenuItem key={ i } value={ i } primaryText={ `${ i }` } />
+		)
+	}
+
+	return list
+}
+
+export default muiThemeable()(class RecallTableRow extends Component {
 	state: State
 	props: Props
 
@@ -33,7 +49,8 @@ export default class RecallTableRow extends Component {
 
 		this.state = {
 			url: '',
-			time: ''
+			time: '',
+			timeStrat: 'from now'
 		}
 	}
 
@@ -55,8 +72,18 @@ export default class RecallTableRow extends Component {
 	onTextChange(field: string, event: Object, newValue: string) {
 		this.setState({
 			[field]: newValue
-		}, () => {
-			chrome.storage.sync.set({ [this.props.id]: newValue })
+		}, () => this.props.datastore.setRow(this.state, this.props.index))
+	}
+
+	onRemoveRow(rowNumber, event) {
+		event.preventDefault()
+
+		this.props.datastore.removeRow(rowNumber)
+	}
+
+	onMenuChange(event, index, value) {
+		this.setState({
+			timeStrat: value
 		})
 	}
 
@@ -72,25 +99,37 @@ export default class RecallTableRow extends Component {
 				</TableRowColumn>
 				<TableRowColumn>
 					<TextField
-						hintText='Time'
+						hintText='6, 6:04, 6:04:30'
 						value={ this.state.time }
 						onChange={ this.onTextChange.bind(this, 'time') }
 					/>
 				</TableRowColumn>
 				<TableRowColumn>
+					<DropDownMenu
+						value={ this.state.timeStrat }
+						onChange={ this.onMenuChange.bind(this) }
+						maxHeight={ 300 }
+						labelStyle={{ paddingLeft: '0px' }}
+						underlineStyle={{ margin: 0, right: '32px' }}
+					>
+						<MenuItem value={ 'from now' } primaryText='from now' />
+						<MenuItem value={ 'at time' } primaryText='at time' />
+					</DropDownMenu>
+				</TableRowColumn>
+				<TableRowColumn>
 					<RaisedButton
 						type='submit'
-						label='Set Recall'
+						label='Set'
 						primary
 						onTouchTap={ this.onSubmit.bind(this) }
 					/>
 				</TableRowColumn>
 				<TableRowColumn>
-					<IconButton>
-						<Cancel />
+					<IconButton onTouchTap={ this.onRemoveRow.bind(this, this.props.index) }>
+						<Cancel color={ this.props.muiTheme.palette.accent1Color }/>
 					</IconButton>
 				</TableRowColumn>
 			</TableRow>
 		)
 	}
-}
+})
