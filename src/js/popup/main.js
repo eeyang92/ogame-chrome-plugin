@@ -58,6 +58,7 @@ export class RecallTableStore {
 	@action getFromStorage() {
 		return new Promise((resolve) => {
 			chrome.storage.sync.get(null, (items) => {
+				console.log(items)
 				let uniqueId
 				let rows
 
@@ -106,8 +107,10 @@ export default class Main extends Component {
 	createNewTableRow() {
 		this.recallTableStore.addRowAndIncrementId({
 			url: '',
-			date: Date.now(),
-			id: toJS(this.recallTableStore.uniqueId)
+			time: '',
+			id: toJS(this.recallTableStore.uniqueId),
+			timeStrat: 'from now',
+			set: false
 		})
 	}
 

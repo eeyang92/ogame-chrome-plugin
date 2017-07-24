@@ -6,6 +6,7 @@ import TextField from 'material-ui/TextField'
 import DropDownMenu from 'material-ui/DropDownMenu'
 import MenuItem from 'material-ui/MenuItem'
 import muiThemeable from 'material-ui/styles/muiThemeable'
+import { observer } from 'mobx-react'
 import {
 	Table,
 	TableBody,
@@ -40,6 +41,7 @@ function zeroToMax(max) {
 	return list
 }
 
+@observer
 export default muiThemeable()(class RecallTableRow extends Component {
 	state: State
 	props: Props
@@ -47,11 +49,6 @@ export default muiThemeable()(class RecallTableRow extends Component {
 	constructor(props: Props) {
 		super(props)
 
-		this.state = {
-			url: '',
-			time: '',
-			timeStrat: 'from now'
-		}
 	}
 
 	onSubmit(event: Object) {
@@ -69,10 +66,24 @@ export default muiThemeable()(class RecallTableRow extends Component {
 		})
 	}
 
+	onSet(event: Object) {
+		event.preventDefault()
+
+		const currentRow = this.props.datastore.rows[this.props.index]
+
+		currentRow.set = !currentRow.set
+
+		console.log(currentRow.set)
+
+		this.props.datastore.setRow(currentRow, this.props.index)
+	}
+
 	onTextChange(field: string, event: Object, newValue: string) {
-		this.setState({
-			[field]: newValue
-		}, () => this.props.datastore.setRow(this.state, this.props.index))
+		const currentRow = this.props.datastore.rows[this.props.index]
+
+		currentRow[field] = newValue
+
+		this.props.datastore.setRow(currentRow, this.props.index)
 	}
 
 	onRemoveRow(rowNumber, event) {
@@ -82,31 +93,35 @@ export default muiThemeable()(class RecallTableRow extends Component {
 	}
 
 	onMenuChange(event, index, value) {
-		this.setState({
-			timeStrat: value
-		})
+		const currentRow = this.props.datastore.rows[this.props.index]
+
+		currentRow.timeStrat = value
+
+		this.props.datastore.setRow(currentRow, this.props.index)
 	}
 
 	render() {
+		const set = this.props.datastore.rows[this.props.index].set
+
 		return (
 			<TableRow>
 				<TableRowColumn>
 					<TextField
 						hintText='URL'
-						value={ this.state.url }
+						value={ this.props.datastore.rows[this.props.index].url }
 						onChange={ this.onTextChange.bind(this, 'url') }
 					/>
 				</TableRowColumn>
 				<TableRowColumn>
 					<TextField
 						hintText='6, 6:04, 6:04:30'
-						value={ this.state.time }
+						value={ this.props.datastore.rows[this.props.index].time }
 						onChange={ this.onTextChange.bind(this, 'time') }
 					/>
 				</TableRowColumn>
 				<TableRowColumn>
 					<DropDownMenu
-						value={ this.state.timeStrat }
+						value={ this.props.datastore.rows[this.props.index].timeStrat }
 						onChange={ this.onMenuChange.bind(this) }
 						maxHeight={ 300 }
 						labelStyle={{ paddingLeft: '0px' }}
@@ -118,10 +133,10 @@ export default muiThemeable()(class RecallTableRow extends Component {
 				</TableRowColumn>
 				<TableRowColumn>
 					<RaisedButton
-						type='submit'
-						label='Set'
-						primary
-						onTouchTap={ this.onSubmit.bind(this) }
+						primary={ set }
+						secondary={ !set }
+						label={ (!set) ? 'Set' : 'Unset' }
+						onTouchTap={ this.onSet.bind(this) }
 					/>
 				</TableRowColumn>
 				<TableRowColumn>

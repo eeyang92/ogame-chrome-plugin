@@ -52,7 +52,7 @@ export default class RecallTable extends Component {
 				>
 					<TableRow>
 						<TableHeaderColumn>URL</TableHeaderColumn>
-						<TableHeaderColumn>Time (H:M:S)</TableHeaderColumn>
+						<TableHeaderColumn>Time (H:M:S) 24H</TableHeaderColumn>
 						<TableHeaderColumn>Time Option</TableHeaderColumn>
 						<TableHeaderColumn>Set</TableHeaderColumn>
 						<TableHeaderColumn>Remove</TableHeaderColumn>
