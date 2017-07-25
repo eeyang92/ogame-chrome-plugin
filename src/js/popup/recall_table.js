@@ -13,7 +13,7 @@ import { observable, computed, action, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 
 import RecallTableRow from './recall_table_row'
-import { RecallTableStore } from './main'
+import RecallTableStore from '../datastores/recall_table_store'
 
 type State = {}
 type Props = {

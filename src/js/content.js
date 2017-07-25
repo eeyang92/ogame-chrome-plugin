@@ -1,5 +1,5 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	console.log(request)
+	console.log('req:', request)
 
 	if (request.type === 'recallFleet') {
 		const headers = new Headers({
@@ -38,5 +38,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 		.catch((err) => {
 			console.log('err:', err)
 		})
+
+		return true
 	}
 })
