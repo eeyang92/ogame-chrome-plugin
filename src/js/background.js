@@ -50,19 +50,11 @@ function parseFromTimeMilliseconds(timeString: string) {
 	const intMinute = parseInt(minute)
 	const intSecond = parseInt(second)
 
-	console.log(intHour)
-	console.log(intMinute)
-	console.log(intSecond)
+	// console.log(intHour)
+	// console.log(intMinute)
+	// console.log(intSecond)
 
 	const total = ((intHour * 3600) + (intMinute * 60) + (intSecond)) * 1000
-
-	// const setTime = new Date()
-
-	// setTime.setDate(setTime.getHours() + hour)
-	// setTime.setDate(setTime.getMinutes() + minute)
-	// setTime.setDate(setTime.getSeconds() + second)
-
-	// console.log('setTime from:', setTime)
 
 	return total
 }
@@ -111,7 +103,7 @@ class TimeKeeper {
 	}
 
 	setDone(index) {
-		console.log('set done:', index)
+		// console.log('set done:', index)
 		const currentRow = this.recallTableStore.rows[index]
 
 		currentRow.done = true
@@ -120,11 +112,6 @@ class TimeKeeper {
 		.then(() => {
 			chrome.runtime.sendMessage({ type: 'refreshPopup' })
 		})
-		// .then(() => {
-		// 	chrome.runtime.sendMessage({ type: 'resetTimer' }, (response) => {
-		// 		console.log('response:', response)
-		// 	})
-		// })
 	}
 
 	syncAndSet() {
@@ -150,7 +137,7 @@ class TimeKeeper {
 							type: 'recallFleet',
 							url: row.url
 						}, (response) => {
-							console.log(response)
+							// console.log(response)
 
 							if (response.status === true) {
 								this.setDone(index)
@@ -162,8 +149,6 @@ class TimeKeeper {
 				} else if (row.timeStrat === 'from now') {
 					const time = parseFromTimeMilliseconds(row.time)
 
-					console.log('time:', time)
-
 					const timeout = setTimeout(() => {
 						const activeTabId = this.recallTableStore.activeTabId
 
@@ -173,15 +158,13 @@ class TimeKeeper {
 							type: 'recallFleet',
 							url: row.url
 						}, (response) => {
-							console.log(response)
+							// console.log(response)
 
 							if (response.status === true) {
 								this.setDone(index)
 							}
 						})
 					}, time)
-
-					// console.log('here')
 
 					this.timeouts.push(timeout)
 				}
@@ -191,117 +174,3 @@ class TimeKeeper {
 }
 
 const timeKeeper = new TimeKeeper()
-
-// class BGRecallTableStore {
-// 	@observable rows = []
-// 	@observable uniqueId = 0
-
-// 	@action addRow(row) {
-// 		this.rows.push(row)
-
-// 		chrome.storage.sync.set({
-// 			recallTable: {
-// 				rows: this.rows
-// 			}
-// 		})
-// 	}
-
-// 	@action removeRow(rowNumber) {
-// 		this.rows.splice(rowNumber, 1)
-
-// 		chrome.storage.sync.set({
-// 			recallTable: {
-// 				rows: this.rows
-// 			}
-// 		})
-// 	}
-
-// 	@action setRows(rows) {
-// 		console.log('new rows:', rows)
-// 		chrome.storage.sync.set({
-// 			recallTable: {
-// 				rows
-// 			}
-// 		})
-
-// 		this.rows = rows
-// 	}
-
-// 	@action setUniqueId(uniqueId) {
-// 		chrome.storage.sync.set({ uniqueId })
-
-// 		this.uniqueId = uniqueId
-// 	}
-
-// 	@action getFromStorage() {
-// 		return new Promise((resolve) => {
-// 			chrome.storage.sync.get(null, (items) => {
-// 				let uniqueId
-// 				let rows
-
-// 				if (!items.uniqueId) {
-// 					chrome.storage.sync.set({ uniqueId: 0 })
-
-// 					uniqueId = 0
-// 				} else {
-// 					uniqueId = items.uniqueId
-// 				}
-
-// 				if (!items.recallTable) {
-// 					chrome.storage.sync.set({ recallTable: {
-// 						rows: []
-// 					} })
-
-// 					rows = []
-// 				} else {
-// 					rows = items.recallTable.rows
-// 				}
-
-// 				this.uniqueId = uniqueId
-// 				this.rows = rows
-
-// 				resolve({
-// 					uniqueId,
-// 					rows
-// 				})
-// 			})
-// 		})
-// 	}
-// }
-
-// const bgRecallTableStore = new BGRecallTableStore()
-
-// bgRecallTableStore.getFromStorage()
-// .then(() => {
-// 	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-// 		if (request.type === 'getRows') {
-// 			sendResponse({
-// 				rows: bgRecallTableStore.rows
-// 			})
-// 		}
-
-// 		if (request.type === 'setRows') {
-// 			bgRecallTableStore.setRows(request.rows)
-
-// 			sendResponse({
-// 				rows: bgRecallTableStore.rows
-// 			})
-// 		}
-
-// 		if (request.type === 'getUniqueId') {
-// 			sendResponse({
-// 				id: bgRecallTableStore.uniqueId
-// 			})
-// 		}
-
-// 		if (request.type === 'setUniqueId') {
-// 			bgRecallTableStore.setUniqueId(request.uniqueId)
-
-// 			sendResponse({
-// 				id: bgRecallTableStore.uniqueId
-// 			})
-// 		}
-// 	})
-
-// 	return
-// })

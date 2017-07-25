@@ -47,21 +47,6 @@ export default muiThemeable()(class RecallTableRow extends Component {
 	state: State
 	props: Props
 
-	// onSubmit(event: Object) {
-	// 	event.preventDefault()
-
-	// 	chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-	// 		const activeTab = tabs[0]
-
-	// 		chrome.tabs.sendMessage(activeTab.id, {
-	// 			type: 'recallFleet',
-	// 			url: this.state.url
-	// 		}, (response) => {
-	// 			console.log(response)
-	// 		})
-	// 	})
-	// }
-
 	onSet(event: Object) {
 		event.preventDefault()
 
@@ -69,8 +54,6 @@ export default muiThemeable()(class RecallTableRow extends Component {
 
 		currentRow.set = !currentRow.set
 		currentRow.done = false
-
-		console.log(currentRow.set)
 
 		this.props.datastore.setRow(currentRow, this.props.index)
 		.then(() => {
@@ -103,8 +86,9 @@ export default muiThemeable()(class RecallTableRow extends Component {
 	}
 
 	render() {
-		const set = this.props.datastore.rows[this.props.index].set
-		const done = this.props.datastore.rows[this.props.index].done
+		const row = this.props.datastore.rows[this.props.index]
+		const set = row.set
+		const done = row.done
 
 		let setStyle = {}
 
@@ -121,8 +105,8 @@ export default muiThemeable()(class RecallTableRow extends Component {
 			<TableRow>
 				<TableRowColumn>
 					<TextField
-						hintText='URL'
-						value={ this.props.datastore.rows[this.props.index].url }
+						hintText='Recall URL'
+						value={ row.url }
 						onChange={ this.onTextChange.bind(this, 'url') }
 						disabled={ set }
 					/>
@@ -130,14 +114,14 @@ export default muiThemeable()(class RecallTableRow extends Component {
 				<TableRowColumn>
 					<TextField
 						hintText='6, 6:04, 6:04:30'
-						value={ this.props.datastore.rows[this.props.index].time }
+						value={ row.time }
 						onChange={ this.onTextChange.bind(this, 'time') }
 						disabled={ set }
 					/>
 				</TableRowColumn>
 				<TableRowColumn>
 					<DropDownMenu
-						value={ this.props.datastore.rows[this.props.index].timeStrat }
+						value={ row.timeStrat }
 						onChange={ this.onMenuChange.bind(this) }
 						maxHeight={ 300 }
 						labelStyle={{ paddingLeft: '0px' }}
@@ -150,6 +134,7 @@ export default muiThemeable()(class RecallTableRow extends Component {
 				</TableRowColumn>
 				<TableRowColumn>
 					<RaisedButton
+						disabled={ row.url.length === 0 || row.time.length === 0 }
 						primary={ !set }
 						secondary={ set }
 						label={ (!set) ? 'Set' : 'Unset' }

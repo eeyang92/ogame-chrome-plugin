@@ -22,7 +22,7 @@ export default class Main extends Component {
 		this.recallTableStore.getFromStorage()
 
 		chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-			console.log('req:', request)
+			// console.log('req:', request)
 
 			if (request.type === 'refreshPopup') {
 				this.recallTableStore.getFromStorage()
@@ -70,7 +70,7 @@ export default class Main extends Component {
 
 	render() {
 		return (
-			<div style={{ height: '400px', width: '750px' }}>
+			<div>
 				<RecallTable datastore={ this.recallTableStore } />
 				<RaisedButton
 					primary
