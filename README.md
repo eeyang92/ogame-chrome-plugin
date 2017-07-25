@@ -1,69 +1,25 @@
-# React + Flow + Webpack + Chrome Extension Boilerplate
+# OGame Chrome Plugin
 
-> Fork of https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate /w React
+- Currently supports recall URLs
 
-## Notable Changes
+## Installation
 
-- Webpack changed to be more configuration/CLI based
-- Support for Flow
-- Standardized ES2015 syntax across entire project
-- Production build will automatically zip the dist directory
+1. Download and extract zip file
+2. Go to Extensions in Chrome
+	- Click "Load Unpacked extension"
+	- Find the extracted directory and select the "dist" folder
+3. You should see the Popup icon ("O") appear on the top-right of your browser
 
-## Installaton
+## How to Use
 
-1. Clone the repository.
-2. `yarn install`
-3. Change the package's name and description on `package.json`.
-4. Change the name of your extension on `src/manifest.json`.
-5. Run `npm run start`
-6. Load your extension on Chrome following:
-	- Access `chrome://extensions/`
-	- Check `Developer mode`
-	- Click on `Load unpacked extension`
-	- Select the `dist` folder.
-
-## Structure
-
-All extension development code must be placed in `src` folder, including the extension manifest.
-
-## Custom Webpack Dev Server Port
-
-```
-PORT=3000 npm run start
-```
-
-## Packing
-
-```
-npm run build
-```
-`./dist` will now contain the unpackaged build
-
-`./zip` will contain the package build to be submitted to the Chrome Web Store
-
-## Secrets
-
-Files containing secret keys are resolved as `./secrets.<NODE_ENV>.js`:
-
-_./secrets.development.js_
-
-```js
-export default { key: '123' };
-```
-
-_./secrets.production.js_
-
-```js
-export default { key: '234' };
-```
-
-_./src/popup.js_
-
-```js
-import secrets from 'secrets';
-ApiCall({ key: secrets.key });
-
-// npm run start => '123'
-// npm run build => '234'
-```
-Files with name `secrets.*.js` already are ignored on the repository
+1. Login OGame (or refresh the page if you are already logged in and running the extension for the first time)
+2. Open the Popup and click "Set OGame Tab" to let the extension know this is the tab that contains OGame
+	- Warning: You will need to leave Chrome and this tab open in order for the extension to work
+	- You don't need to keep the tab focused, you can browse in other tabs
+3. If you wish to recall a fleet, go to your "Fleet Movement" screen and right click the "Recall" button, and then "Copy Link Address". This will give you the request URL that you can paste into the URL field on the Popup
+4. Select a time
+	- (from now) Hour:Minute:Second
+	- (at time) Hour:Minute:Second (Note: 24 hour format)
+5. Click Set
+	- The request will only fire is Set is active. You can unset at anytime.
+6. The Set Button will turn green if the request successfully fires

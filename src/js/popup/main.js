@@ -81,7 +81,7 @@ export default class Main extends Component {
 				/>
 				<RaisedButton
 					primary
-					label={ `Set Active Tab [Current: ${ this.recallTableStore.activeTabId }]` }
+					label={ `Set OGame Tab [Current: ${ this.recallTableStore.activeTabId }]` }
 					style={{ marginTop: '5px' }}
 					onTouchTap={ this.setActiveTab.bind(this) }
 					fullWidth
