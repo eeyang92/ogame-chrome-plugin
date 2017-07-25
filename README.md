@@ -5,7 +5,8 @@
 ## Installation
 
 1. Download and extract zip file
-2. Go to Extensions in Chrome
+2. Go to Extensions in Chrome (chrome://extensions/)
+	- Check the "Developer Mode" checkbox
 	- Click "Load Unpacked extension"
 	- Find the extracted directory and select the "dist" folder
 3. You should see the Popup icon ("O") appear on the top-right of your browser
