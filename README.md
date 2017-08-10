@@ -31,6 +31,7 @@
 ### Fleet Dispatch
 
 1. Make sure OGame Tab is set
-2. Enter Fleet information
+2. Select the desired planet
+3. Enter Fleet information
 	- Make sure fleet information is valid (i.e. you have the correct number of ships), there is no built in validation (yet)
-3. Press "Send Fleet"
+4. Press "Send Fleet"
