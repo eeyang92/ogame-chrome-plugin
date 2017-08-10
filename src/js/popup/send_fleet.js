@@ -581,7 +581,7 @@ export default class Main extends Component {
 				</Table>
 				<RaisedButton
 					secondary
-					label='Send Fleet!'
+					label='Send Fleet'
 					style={{ marginTop: '5px' }}
 					onTouchTap={ this.sendFleet1.bind(this) }
 					fullWidth

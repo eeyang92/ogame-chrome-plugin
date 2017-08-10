@@ -1,6 +1,7 @@
 # OGame Chrome Plugin
 
 - Currently supports recall URLs
+- Fleet Dispatch
 
 ## Installation
 
@@ -13,6 +14,8 @@
 
 ## How to Use
 
+### Recall
+
 1. Login OGame (or refresh the page if you are already logged in and running the extension for the first time)
 2. Open the Popup and click "Set OGame Tab" to let the extension know this is the tab that contains OGame
 	- Warning: You will need to leave Chrome and this tab open in order for the extension to work
@@ -24,3 +27,10 @@
 5. Click Set
 	- The request will only fire is Set is active. You can unset at anytime.
 6. The Set Button will turn green if the request successfully fires
+
+### Fleet Dispatch
+
+1. Make sure OGame Tab is set
+2. Enter Fleet information
+	- Make sure fleet information is valid (i.e. you have the correct number of ships), there is no built in validation (yet)
+3. Press "Send Fleet"
