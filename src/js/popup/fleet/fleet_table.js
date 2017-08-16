@@ -14,11 +14,13 @@ import { observer } from 'mobx-react'
 
 // import RecallTableRow from './recall_table_row'
 import FleetStore from '../../datastores/action_store'
+import OptionsStore from '../../datastores/options_store'
 import FleetTableRow from './fleet_table_row'
 
 type State = {}
 type Props = {
-	fleetStore: FleetStore
+	fleetStore: FleetStore,
+	optionsStore: OptionsStore
 }
 
 @observer
@@ -28,13 +30,12 @@ export default class FleetTable extends Component {
 	renderRows() {
 		const rows = []
 
-		// console.log('here:', this.props.fleetStore)
-
 		if (this.props.fleetStore.rows.length > 0) {
 			this.props.fleetStore.rows.forEach((row, index) => {
 				rows.push(
 					<FleetTableRow
 						fleetStore={ this.props.fleetStore }
+						optionsStore={ this.props.optionsStore }
 						index={ index }
 						key={ row.id }
 					/>

@@ -3,6 +3,12 @@ import { observable, computed, action, toJS } from 'mobx'
 
 import RecallTableStore from './datastores/recall_table_store'
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	if (request.type === 'refreshPopup') {
+		chrome.runtime.sendMessage({ type: 'refreshPopup' })
+	}
+})
+
 function parseTimeString(timeString: string) {
 	const splitTimeString = timeString.split(':')
 

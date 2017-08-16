@@ -35,3 +35,4 @@
 3. Enter Fleet information
 	- Make sure fleet information is valid (i.e. you have the correct number of ships), there is no built in validation (yet)
 4. Press "Send Fleet"
+5. Make sure only one fleet is sent at a time

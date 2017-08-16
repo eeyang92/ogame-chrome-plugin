@@ -19,6 +19,7 @@ import {
 } from 'material-ui/Table'
 
 import FleetStore from '../../datastores/fleet_store'
+import OptionsStore from '../../datastores/options_store'
 import EditFleet from './edit_fleet'
 
 const shipMap = {
@@ -79,8 +80,8 @@ type State = {
 }
 
 type Props = {
-	id: string,
 	fleetStore: FleetStore,
+	optionsStore: OptionsStore,
 	index: number
 }
 
@@ -97,22 +98,6 @@ export default muiThemeable()(class FleetTableRow extends Component {
 			sendDisabled: false
 		}
 	}
-
-	// onSet(event: Object) {
-	// 	event.preventDefault()
-
-	// 	const currentRow = this.props.fleetStore.rows[this.props.index]
-
-	// 	currentRow.set = !currentRow.set
-	// 	currentRow.done = false
-
-	// 	this.props.fleetStore.setRow(currentRow, this.props.index)
-	// 	.then(() => {
-	// 		chrome.runtime.sendMessage({ type: 'resetTimer' }, (response) => {
-	// 			console.log('response:', response)
-	// 		})
-	// 	})
-	// }
 
 	onTextChange(field: string, event: Object, newValue: string) {
 		const currentRow = this.props.fleetStore.rows[this.props.index]
@@ -164,7 +149,9 @@ export default muiThemeable()(class FleetTableRow extends Component {
 
 		console.log('body 1:', body)
 
-		const activeTabId = this.props.fleetStore.activeTabId
+		console.log('o store:', this.props.optionsStore)
+
+		const activeTabId = this.props.optionsStore.activeTabId
 
 		chrome.tabs.sendMessage(activeTabId, {
 			type: 'getUrl',
@@ -197,7 +184,7 @@ export default muiThemeable()(class FleetTableRow extends Component {
 
 		console.log('body 2:', body)
 
-		const activeTabId = this.props.fleetStore.activeTabId
+		const activeTabId = this.props.optionsStore.activeTabId
 
 		chrome.tabs.sendMessage(activeTabId, {
 			type: 'postUrl',
@@ -225,7 +212,7 @@ export default muiThemeable()(class FleetTableRow extends Component {
 			type: destinationTypeMap[stateSnapshot.destination]
 		}
 
-		const activeTabId = this.props.fleetStore.activeTabId
+		const activeTabId = this.props.optionsStore.activeTabId
 
 		chrome.tabs.sendMessage(activeTabId, {
 			type: 'postUrl',
@@ -260,7 +247,7 @@ export default muiThemeable()(class FleetTableRow extends Component {
 
 		console.log('body 3:', body)
 
-		const activeTabId = this.props.fleetStore.activeTabId
+		const activeTabId = this.props.optionsStore.activeTabId
 
 		chrome.tabs.sendMessage(activeTabId, {
 			type: 'postUrl',
@@ -309,7 +296,7 @@ export default muiThemeable()(class FleetTableRow extends Component {
 
 		console.log('body exec:', body)
 
-		const activeTabId = this.props.fleetStore.activeTabId
+		const activeTabId = this.props.optionsStore.activeTabId
 
 		console.log(`send fleet to content script! ${ activeTabId }`)
 

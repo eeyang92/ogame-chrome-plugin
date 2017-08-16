@@ -1,110 +1,114 @@
 import { observable, action, toJS } from 'mobx'
 
-function setStorageRows(rows) {
-	return new Promise((resolve) => {
-		chrome.storage.sync.set({
-			recallTableRows: toJS(rows)
-		}, () => {
-			resolve()
-		})
-	})
-}
+// Schema
+// options: {
+//   activeTabId: number
+// }
 
-export default class RecallTableStore {
-	@observable rows = []
+export default class OptionsStore {
 	@observable uniqueId = 0
 	@observable activeTabId = -1
 
-	@action addRow(row) {
-		this.rows.push(row)
+	storageKey = 'options'
 
-		return setStorageRows(this.rows)
-	}
+	@action getUniqueIdAndIncrement() {
+		const id = this.uniqueId++
 
-	@action removeRow(rowNumber) {
-		this.rows.splice(rowNumber, 1)
+		const options = {
+			uniqueId: this.uniqueId,
+			activeTabId: this.activeTabId
+		}
 
-		return setStorageRows(this.rows)
-	}
+		chrome.storage.sync.set({ options })
 
-	@action setRows(rows) {
-		this.rows = rows
-
-		return setStorageRows(this.rows)
-	}
-
-	@action setRow(row, index) {
-		this.rows[index] = row
-
-		return setStorageRows(this.rows)
+		return id
 	}
 
 	@action setUniqueId(uniqueId) {
-		chrome.storage.sync.set({ uniqueId })
+		const options = {
+			uniqueId,
+			activeTabId: this.activeTabId
+		}
 
 		this.uniqueId = uniqueId
+
+		chrome.storage.sync.set({ options })
 	}
 
-	@action setActiveTabId(tabId) {
-		this.activeTabId = tabId
+	@action setActiveTabId(activeTabId) {
+		const options = {
+			uniqueId: this.uniqueId,
+			activeTabId
+		}
+
+		this.activeTabId = activeTabId
 
 		return new Promise((resolve) => {
-			chrome.storage.sync.set({ activeTabId: tabId }, () => {
+			chrome.storage.sync.set({ options }, () => {
 				resolve()
 			})
 		})
 	}
 
-	@action addRowAndIncrementId(row) {
-		this.rows.push(row)
-
-		chrome.storage.sync.set({
-			recallTableRows: toJS(this.rows),
-			uniqueId: toJS(++this.uniqueId)
-		})
-	}
-
 	@action getFromStorage() {
 		return new Promise((resolve) => {
-			chrome.storage.sync.get(null, (items) => {
-				console.log('items:', items)
+			chrome.storage.sync.get(this.storageKey, (items) => {
+				const options = items.options
+
+				console.log('options:', options)
+
 				let uniqueId
 				let activeTabId
-				let rows
+				let shouldSet = false
+				const toSet = {}
 
-				if (typeof items.uniqueId === 'undefined') {
-					chrome.storage.sync.set({ uniqueId: 0 })
-
+				if (typeof options === 'undefined') {
+					toSet.uniqueId = 0
 					uniqueId = 0
-				} else {
-					uniqueId = items.uniqueId
-				}
 
-				if (typeof items.activeTabId === 'undefined') {
-					chrome.storage.sync.set({ activeTabId: -1 })
-
+					toSet.activeTabId = -1
 					activeTabId = -1
+
+					shouldSet = true
 				} else {
-					activeTabId = items.activeTabId
+					toSet.uniqueId = options.uniqueId
+					toSet.activeTabId = options.activeTabId
+
+					if (typeof options.uniqueId === 'undefined') {
+						shouldSet = true
+						toSet.uniqueId = 0
+						// chrome.storage.sync.set({ uniqueId: 0 })
+
+						uniqueId = 0
+					} else {
+						uniqueId = options.uniqueId
+					}
+
+					if (typeof options.activeTabId === 'undefined') {
+						shouldSet = true
+						toSet.activeTabId = -1
+
+						// chrome.storage.sync.set({ activeTabId: -1 })
+
+						activeTabId = -1
+					} else {
+						activeTabId = options.activeTabId
+					}
 				}
 
-				if (!Array.isArray(items.recallTableRows)) {
-					chrome.storage.sync.set({ recallTableRows: [] })
-
-					rows = []
-				} else {
-					rows = items.recallTableRows
+				if (shouldSet) {
+					chrome.storage.sync.set({ options: toSet })
 				}
 
 				this.uniqueId = uniqueId
-				this.rows = rows
 				this.activeTabId = activeTabId
 
-				console.log('load:', this.activeTabId)
+				console.log('loadasdasda')
+				console.log(this.uniqueId)
+				console.log(activeTabId)
 
 				resolve({
 					uniqueId,
-					rows,
 					activeTabId
 				})
 			})

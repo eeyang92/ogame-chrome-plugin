@@ -8,19 +8,21 @@ import { observable, computed, action, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 
 import FleetStore from '../../datastores/action_store'
+import OptionsStore from '../../datastores/options_store'
 // import SendFleet from './send_fleet'
 
 type State = {}
 type Props = {
-	fleetStore: FleetStore
+	fleetStore: FleetStore,
+	optionsStore: OptionsStore
 }
 
 export default class NewRowMenu extends Component {
 	props: Props
 
 	createAttackRow() {
-		this.props.fleetStore.addRowAndIncrementId({
-			id: toJS(this.props.fleetStore.uniqueId),
+		this.props.fleetStore.addRow({
+			id: toJS(this.props.optionsStore.getUniqueIdAndIncrement()),
 			label: '',
 			options: {
 				smallCargo: '',
