@@ -14,297 +14,35 @@ import MenuItem from 'material-ui/MenuItem'
 import { observable, computed, action, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 
-// import RecallTableStore from '../datastores/recall_table_store'
-// import RecallTable from './recall_table'
-import ActionStore from '../datastores/action_store'
+import FleetStore from '../../datastores/fleet_store'
 
 type State = {}
 type Props = {
-	actionStore: ActionStore
-}
-
-const shipMap = {
-	smallCargo: 202,
-	largeCargo: 203,
-	lightFighter: 204,
-	heavyFighter: 205,
-	cruiser: 206,
-	battleship: 207,
-	colonyShip: 208,
-	recycler: 209,
-	espionageProbe: 210,
-	bomber: 211,
-	solarSatellite: 212,
-	destroyer: 213,
-	deathstar: 214,
-	battlecruiser: 215
-}
-
-const missionMap = {
-	attack: 1,
-	acsAttack: 2,
-	transport: 3,
-	deploy: 4,
-	acsDefend: 5,
-	espionage: 6,
-	colonize: 7,
-	recycle: 8,
-	moonDestruction: 9,
-	expedition: 15
-}
-
-const destinationTypeMap = {
-	planet: 1,
-	debris: 2,
-	moon: 3
-}
-
-function formatValue(value) {
-	return (value.length > 0) ? value : 0
-}
-
-function getShipsFromState(state: Object) {
-	const ships = {}
-
-	for (const ship in shipMap) {
-		if (state[ship].length > 0) {
-			ships[`am${ shipMap[ship] }`] = state[ship]
-		}
-	}
-
-	return ships
+	fleetStore: FleetStore,
+	index: number,
+	onClose: () => void
 }
 
 @observer
-export default class Main extends Component {
+export default class EditFleet extends Component {
 	props: Props
 
 	constructor(props: Props) {
 		super(props)
 
-		this.state = {
-			smallCargo: '',
-			largeCargo: '',
-			lightFighter: '',
-			heavyFighter: '',
-			cruiser: '',
-			battleship: '',
-			colonyShip: '',
-			recycler: '',
-			espionageProbe: '',
-			bomber: '',
-			solarSatellite: '',
-			destroyer: '',
-			deathstar: '',
-			battlecruiser: '',
-			galaxy: '',
-			system: '',
-			position: '',
-			speed: '10',
-			type: '1',
-			mission: 'attack',
-			sendDisabled: false,
-			holdingtime: '0',
-			expeditiontime: 1,
-			metal: '',
-			crystal: '',
-			deuterium: '',
-			failureMessage: '',
-			destination: 'planet'
-		}
+		const row = this.props.fleetStore.rows[this.props.index]
+
+		this.state = Object.assign({}, row.options)
 	}
 
-	sendFleet() {
-		this.sendFleet1(Object.assign({}, this.state))
-	}
+	saveFleet() {
+		const row = this.props.fleetStore.rows[this.props.index]
 
-	sendFleet1(stateSnapshot: Object) {
-		this.setState({
-			sendDisabled: true,
-			failureMessage: ''
-		})
+		row.options = Object.assign({}, this.state)
 
-		const body = {
-			galaxy: stateSnapshot.galaxy,
-			system: stateSnapshot.system,
-			position: stateSnapshot.position,
-			type: destinationTypeMap[stateSnapshot.destination],
-			mission: missionMap[stateSnapshot.mission],
-			speed: stateSnapshot.speed,
-			...getShipsFromState(stateSnapshot)
-		}
-
-		console.log('body 1:', body)
-
-		const activeTabId = this.props.actionStore.activeTabId
-
-		chrome.tabs.sendMessage(activeTabId, {
-			type: 'getUrl',
-			url: 'https://s147-en.ogame.gameforge.com/game/index.php?page=fleet1',
-			headers: {
-				Referer: 'https://s147-en.ogame.gameforge.com/game/index.php?page=fleet1'
-			},
-			body
-		}, (response) => {
-			if (response.status === true) {
-				this.sendFleet2(stateSnapshot)
-			} else {
-				this.setState({
-					failureMessage: response.errorMessage
-				})
-			}
-		})
-	}
-
-	sendFleet2(stateSnapshot: Object) {
-		this.setState({
-			sendDisabled: true
-		})
-
-		const body = {
-			galaxy: stateSnapshot.galaxy,
-			system: stateSnapshot.system,
-			position: stateSnapshot.position,
-			type: destinationTypeMap[stateSnapshot.destination],
-			mission: missionMap[stateSnapshot.mission],
-			speed: stateSnapshot.speed,
-			...getShipsFromState(stateSnapshot)
-		}
-
-		console.log('body 2:', body)
-
-		const activeTabId = this.props.actionStore.activeTabId
-
-		chrome.tabs.sendMessage(activeTabId, {
-			type: 'postUrl',
-			url: 'https://s147-en.ogame.gameforge.com/game/index.php?page=fleet2',
-			headers: {
-				Referer: 'https://s147-en.ogame.gameforge.com/game/index.php?page=fleet1'
-			},
-			body
-		}, (response) => {
-			if (response.status === true) {
-				this.sendFleetCheck(stateSnapshot)
-			} else {
-				this.setState({
-					failureMessage: response.errorMessage
-				})
-			}
-		})
-	}
-
-	sendFleetCheck(stateSnapshot: Object) {
-		const body = {
-			galaxy: stateSnapshot.galaxy,
-			system: stateSnapshot.system,
-			planet: stateSnapshot.position,
-			type: destinationTypeMap[stateSnapshot.destination]
-		}
-
-		const activeTabId = this.props.actionStore.activeTabId
-
-		chrome.tabs.sendMessage(activeTabId, {
-			type: 'postUrl',
-			url: 'https://s147-en.ogame.gameforge.com/game/index.php?page=fleetcheck&ajax=1&espionage=0',
-			headers: {
-				Referer: 'https://s147-en.ogame.gameforge.com/game/index.php?page=fleet2'
-			},
-			body
-		}, (response) => {
-			if (response.status === true) {
-				this.sendFleet3(stateSnapshot)
-			} else {
-				this.setState({
-					failureMessage: response.errorMessage
-				})
-			}
-		})
-	}
-
-	sendFleet3(stateSnapshot: Object) {
-		const body = {
-			type: destinationTypeMap[stateSnapshot.destination],
-			mission: missionMap[stateSnapshot.mission],
-			union: 0,
-			galaxy: stateSnapshot.galaxy,
-			system: stateSnapshot.system,
-			position: stateSnapshot.position,
-			acsValues: '-',
-			speed: stateSnapshot.speed,
-			...getShipsFromState(stateSnapshot)
-		}
-
-		console.log('body 3:', body)
-
-		const activeTabId = this.props.actionStore.activeTabId
-
-		chrome.tabs.sendMessage(activeTabId, {
-			type: 'postUrl',
-			url: 'https://s147-en.ogame.gameforge.com/game/index.php?page=fleet3',
-			headers: {
-				Referer: 'https://s147-en.ogame.gameforge.com/game/index.php?page=fleet2'
-			},
-			body
-		}, (response) => {
-			if (response.status === true) {
-				const regExp = /<input type='hidden' name='token' value='(\w*)' \/>/
-				const results = regExp.exec(response.text)
-				const token = results[1]
-
-				this.sendFleetExec(stateSnapshot, token)
-			} else {
-				this.setState({
-					failureMessage: response.errorMessage
-				})
-			}
-		})
-	}
-
-	sendFleetExec(stateSnapshot: Object, token) {
-		const body = {
-			holdingtime: stateSnapshot.holdingtime,
-			expeditiontime: stateSnapshot.expeditiontime,
-			token,
-			galaxy: stateSnapshot.galaxy,
-			system: stateSnapshot.system,
-			position: stateSnapshot.position,
-			type: destinationTypeMap[stateSnapshot.destination],
-			mission: missionMap[stateSnapshot.mission],
-			union2: 0,
-			holdingOrExpTime: 0,
-			speed: stateSnapshot.speed,
-			acsValues: '-',
-			prioMetal: 1,
-			prioCrystal: 2,
-			prioDeuterium: 3,
-			metal: formatValue(stateSnapshot.metal),
-			crystal: formatValue(stateSnapshot.crystal),
-			deuterium: formatValue(stateSnapshot.deuterium),
-			...getShipsFromState(stateSnapshot)
-		}
-
-		console.log('body exec:', body)
-
-		const activeTabId = this.props.actionStore.activeTabId
-
-		console.log(`send fleet to content script! ${ activeTabId }`)
-
-		chrome.tabs.sendMessage(activeTabId, {
-			type: 'postUrl',
-			url: 'https://s147-en.ogame.gameforge.com/game/index.php?page=movement',
-			body
-		}, (response) => {
-			this.setState({
-				sendDisabled: false
-			})
-
-			if (response.status === true) {
-				console.log(response.text)
-			} else {
-				this.setState({
-					failureMessage: response.errorMessage
-				})
-			}
+		this.props.fleetStore.setRow(row, this.props.index)
+		.then(() => {
+			this.props.onClose()
 		})
 	}
 
@@ -584,15 +322,20 @@ export default class Main extends Component {
 						</TableRow>
 					</TableBody>
 				</Table>
-				<RaisedButton
-					secondary
-					label='Send Fleet'
-					style={{ marginTop: '5px' }}
-					onTouchTap={ this.sendFleet.bind(this) }
-					fullWidth
-					disabled={ this.state.sendDisabled }
-				/>
-				{ this.state.failureMessage }
+				<div style={{ marginTop: '5px', textAlign: 'center' }}>
+					<RaisedButton
+						primary
+						label='Cancel'
+						style={{ width: '49%', marginRight: '2px' }}
+						onTouchTap={ this.props.onClose }
+					/>
+					<RaisedButton
+						secondary
+						label='Save Fleet'
+						style={{ width: '49%', marginLeft: '2px' }}
+						onTouchTap={ this.saveFleet.bind(this) }
+					/>
+				</div>
 			</div>
 		)
 	}

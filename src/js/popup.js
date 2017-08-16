@@ -8,7 +8,8 @@ import { blue500, blue300, blue100, red500, red300, red100 } from 'material-ui/s
 import { useStrict } from 'mobx'
 
 // import '../css/popup.css'
-import Main from './popup/main'
+// import Main from './popup/main'
+import Main from './popup/main2'
 
 useStrict()
 injectTapEventPlugin()
