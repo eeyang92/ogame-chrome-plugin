@@ -119,7 +119,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 			'Cache-Control': 'max-age=0',
 			Connection: 'keep-alive',
 			'Upgrade-Insecure-Requests': '1',
-			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+			// 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
 			...extraHeaders
 		})
 

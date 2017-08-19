@@ -28,8 +28,6 @@ export default class OptionsTab extends Component {
 			if (chrome.lastError) {
 				console.log(chrome.lastError)
 			} else {
-				console.log('cleared')
-
 				chrome.runtime.sendMessage({ type: 'refreshPopup' })
 			}
 		})

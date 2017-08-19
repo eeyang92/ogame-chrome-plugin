@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import RaisedButton from 'material-ui/RaisedButton'
-import TextField from 'material-ui/TextField'
 import { observable, computed, action, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 

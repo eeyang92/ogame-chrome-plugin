@@ -39,7 +39,7 @@ export default class Main extends Component {
 
 	render() {
 		return (
-			<Tabs>
+			<Tabs style={{ marginBottom: '8px' }}>
 				<Tab label='Fleet'>
 					<FleetTab
 						optionsStore={ this.optionsStore }

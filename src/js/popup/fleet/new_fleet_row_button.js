@@ -1,15 +1,10 @@
 import React, { Component } from 'react'
 import RaisedButton from 'material-ui/RaisedButton'
-import TextField from 'material-ui/TextField'
-import Popover from 'material-ui/Popover'
-import Menu from 'material-ui/Menu'
-import MenuItem from 'material-ui/MenuItem'
 import { observable, computed, action, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 
-import FleetStore from '../../datastores/action_store'
+import FleetStore from '../../datastores/fleet_store'
 import OptionsStore from '../../datastores/options_store'
-// import SendFleet from './send_fleet'
 
 type State = {}
 type Props = {
@@ -17,6 +12,7 @@ type Props = {
 	optionsStore: OptionsStore
 }
 
+@observer
 export default class NewRowMenu extends Component {
 	props: Props
 
