@@ -16,34 +16,6 @@ const muiTheme = getMuiTheme({
 	}
 })
 
-// export default function defenseSummary() {
-// 	const divs = $('.fleetDetails.detailsOpened > .reversal')
-
-// 	// console.log(divs)
-
-// 	for (let i = 0; i < divs.length; i++) {
-// 		const div = divs[i]
-
-// 		const id = $(div).attr('ref')
-
-// 		$(div).css('width', '100px')
-// 		$(div).append(`<div id="test-${ id }" style="display: inline-block; vertical-align: top;"></div>`)
-
-// 		console.log(div)
-
-// 		render(
-// 			<MuiThemeProvider muiTheme={ muiTheme }>
-// 				<RaisedButton
-// 					primary
-// 					label={ `${ id }` }
-// 					style={{ height: '15px', minWidth: '35px', backgroundColor: undefined }}
-// 					labelStyle={{ fontSize: '7px', paddingLeft: '3px', paddingRight: '3px' }}
-// 				/>
-// 			</MuiThemeProvider>,
-// 		window.document.getElementById(`test-${ id }`))
-// 	}
-// }
-
 function numberWithCommas(x) {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
@@ -97,10 +69,7 @@ export default function defenseSummary() {
 				primary
 				label={ numberWithCommas(total) }
 				style={{ marginLeft: '55px', marginTop: '25px' }}
-				// style={{ height: '15px', minWidth: '35px', backgroundColor: undefined }}
-				// labelStyle={{ fontSize: '7px', paddingLeft: '3px', paddingRight: '3px' }}
 			/>
 		</MuiThemeProvider>,
 	window.document.getElementById('defense_summary'))
-	// }
 }
