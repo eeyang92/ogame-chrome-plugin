@@ -7,6 +7,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 import { blue500, blue300, blue100, red500, red300, red100 } from 'material-ui/styles/colors'
 
 import injectButtons from './content/inject_buttons'
+import defenseSummary from './content/defense_summary'
 
 injectTapEventPlugin()
 
@@ -186,3 +187,4 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // )
 
 injectButtons()
+defenseSummary()
